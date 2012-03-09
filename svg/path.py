@@ -41,15 +41,13 @@ class Path(SVGBase):
     TEMPLATE = '''\
 <path d="{d}" {meta}></path>'''
 
-    def __init__(self, meta=None, **kwargs):
+    def __init__(self, **kwargs):
         '''Create the path object, with additional metadata.
 
-        @param meta: optional, dict
-            additional metadata to store in the path.
         @param kwargs: keyword parameters
             additional metadata as key/value pairs'''
 
-        super(Path, self).__init__(meta=meta, **kwargs)
+        super(Path, self).__init__(**kwargs)
 
         self.d = list()
         self.pen = None

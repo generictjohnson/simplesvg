@@ -1,12 +1,12 @@
 from base import SVGBase
 
 class Rect(SVGBase):
-    '''A SVG rectangle.'''
+    '''An SVG rect.'''
 
     TEMPLATE = '''\
 <rect x="{x}" y="{y}" width="{width}" height="{height}" {meta}></rect>'''
 
-    def __init__(self, x, y, width, height, meta=None, **kwargs):
+    def __init__(self, x, y, width, height, **kwargs):
         '''Create the rect object, with additional metadata.
 
         @param x: float
@@ -17,12 +17,10 @@ class Rect(SVGBase):
             the width of the rectangle
         @param height: float
             the height of the rectangle
-        @param meta: optional, dict
-            additional metadata to store in the rect.
         @param kwargs: keyword parameters
             additional metadata as key/value pairs'''
 
-        super(Rect, self).__init__(meta=meta, **kwargs)
+        super(Rect, self).__init__(**kwargs)
 
         self.x = x
         self.y = y

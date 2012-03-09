@@ -1,5 +1,10 @@
 from base import SVGBase
+from circle import Circle
+from ellipse import Ellipse
+from line import Line
 from path import Path
+from polygon import Polygon
+from polyline import Polyline
 from rect import Rect
 
 class Canvas(SVGBase):
@@ -33,37 +38,95 @@ class Canvas(SVGBase):
 
         self.elements = list()
 
-    def path(self, meta=None, **kwargs):
-        '''Create a path, add it to the DOM and return a reference to it.
+    def path(self, *args, **kwargs):
+        '''Create a path, add it to the DOM and return a reference to it. All
+        arguments are passed to the path's constructor.
 
-        @param meta: optional, dict
-            any metadata to pass to the newly created path
-        @param kwargs: keyword parameters
-            additional metadata'''
+        @param args: positional arguments
+            the positional arguments to pass to the path's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the path's constructor'''
 
-        path = Path(meta=meta, **kwargs)
+        path = Path(*args, **kwargs)
         self.elements.append(path)
         return path
 
-    def rect(self, x, y, width, height, meta=None, **kwargs):
+    def rect(self, *args, **kwargs):
         '''Create a rect, add it to the DOM and return a reference to it.
 
-        @param x: float
-            the x coordinate of the corner closest to the origin
-        @param y: float
-            the y coordinate of the corner closest to the origin
-        @param width: float
-            the width of the rectangle
-        @param height: float
-            the height of the rectangle
-        @param meta: optional, dict
-            additional metadata to store in the rect.
-        @param kwargs: keyword parameters
-            additional metadata as key/value pairs'''
+        @param args: positional arguments
+            the positional arguments to pass to the rect's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the rect's constructor'''
 
-        rect = Rect(x, y, width, height, meta=None, **kwargs)
+        rect = Rect(*args, **kwargs)
         self.elements.append(rect)
         return rect
+
+    def circle(self, *args, **kwargs):
+        '''Create a circle, add it to the DOM and return a reference to it. All
+        arguments are passed to the circle's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the circle's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the circle's constructor'''
+
+        circle = Circle(*args, **kwargs)
+        self.elements.append(circle)
+        return circle
+
+    def ellipse(self, *args, **kwargs):
+        '''Create a ellipse, add it to the DOM and return a reference to it. 
+        All arguments are passed to the circle's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the circle's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the circle's constructor'''
+
+        ellipse = Ellipse(*args, **kwargs)
+        self.elements.append(ellipse)
+        return ellipse
+
+    def line(self, *args, **kwargs):
+        '''Create a line, add it to the DOM and return a reference to it. All 
+        arguments are passed to the line's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the line's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the line's constructor'''
+
+        line = Line(*args, **kwargs)
+        self.elements.append(line)
+        return line
+
+    def polyline(self, *args, **kwargs):
+        '''Create a polyline, add it to the DOM and return a reference to it. 
+        All arguments are passed to the polyline's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the polyline's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the polyline's constructor'''
+
+        polyline = Polyline(*args, **kwargs)
+        self.elements.append(polyline)
+        return polyline
+
+    def polygon(self, *args, **kwargs):
+        '''Create a polygon, add it to the DOM and return a reference to it. 
+        All arguments are passed to the polygon's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the polygon's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the polygon's constructor'''
+
+        polygon = Polygon(*args, **kwargs)
+        self.elements.append(polygon)
+        return polygon
 
     def render(self):
         '''Generate the XML for this canvas and all of its elements.'''
