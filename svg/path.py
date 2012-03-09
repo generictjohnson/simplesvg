@@ -34,7 +34,7 @@ def requires_open(fn):
     return wrapper
 
 class Path(SVGBase):
-    '''A simple SVG path element.
+    '''An SVG path element.
     
     The arc logic was taken from the libcairo library'''
 
@@ -44,10 +44,10 @@ class Path(SVGBase):
     def __init__(self, meta=None, **kwargs):
         '''Create the path object, with additional metadata.
 
-        @param kwargs: keyword arguments
+        @param meta: optional, dict
             additional metadata to store in the path.
         @param kwargs: keyword parameters
-            additional metadata'''
+            additional metadata as key/value pairs'''
 
         super(Path, self).__init__(meta=meta, **kwargs)
 

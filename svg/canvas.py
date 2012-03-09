@@ -1,5 +1,6 @@
 from base import SVGBase
 from path import Path
+from rect import Rect
 
 class Canvas(SVGBase):
     '''The container for all SVG elements.'''
@@ -43,6 +44,26 @@ class Canvas(SVGBase):
         path = Path(meta=meta, **kwargs)
         self.elements.append(path)
         return path
+
+    def rect(self, x, y, width, height, meta=None, **kwargs):
+        '''Create a rect, add it to the DOM and return a reference to it.
+
+        @param x: float
+            the x coordinate of the corner closest to the origin
+        @param y: float
+            the y coordinate of the corner closest to the origin
+        @param width: float
+            the width of the rectangle
+        @param height: float
+            the height of the rectangle
+        @param meta: optional, dict
+            additional metadata to store in the rect.
+        @param kwargs: keyword parameters
+            additional metadata as key/value pairs'''
+
+        rect = Rect(x, y, width, height, meta=None, **kwargs)
+        self.elements.append(rect)
+        return rect
 
     def render(self):
         '''Generate the XML for this canvas and all of its elements.'''

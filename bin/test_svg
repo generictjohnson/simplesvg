@@ -11,8 +11,9 @@ path = canvas.path(meta={'fill':'red', 'stroke':'#000'})
 path.move_to(250, 250)
 path.arc(250, 250, 50, 0, 3 * math.pi / 2)
 #path.line_to(250, 250)
-
 path.close()
+
+canvas.rect(50, 50, 100, 75)
 
 canvas.save('test.svg')
 
