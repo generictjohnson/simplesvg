@@ -179,17 +179,20 @@ class Path(SVGBase):
             the maximum angle a curve can subtend - any requests that span more
             than this value will be broken up into multiple curves'''
 
-        d_theta = theta2 - theta1
-        n_segments = int(math.ceil(abs(d_theta) / max_segment_theta))
-
-        theta = theta1
-        theta_step = d_theta / n_segments
-
         self.line_to(cx + radius * math.cos(theta1),
                      cy + radius * math.sin(theta1))
-        for i in xrange(n_segments):
-            self._arc_segment(cx, cy, radius, theta, theta + theta_step)
-            theta += theta_step
+
+        d_theta = theta2 - theta1
+        if d_theta != 0.0:
+
+            n_segments = int(math.ceil(abs(d_theta) / max_segment_theta))
+
+            theta = theta1
+            theta_step = d_theta / n_segments
+
+            for i in xrange(n_segments):
+                self._arc_segment(cx, cy, radius, theta, theta + theta_step)
+                theta += theta_step
 
     def render(self):
         '''Generate the XML for this element.'''
