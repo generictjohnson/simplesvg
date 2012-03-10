@@ -3,8 +3,7 @@ from base import SVGBase
 class Rect(SVGBase):
     '''An SVG rect.'''
 
-    TEMPLATE = '''\
-<rect x="{x}" y="{y}" width="{width}" height="{height}" {meta}></rect>'''
+    TAG = 'rect'
 
     def __init__(self, x, y, width, height, **kwargs):
         '''Create the rect object, with additional metadata.
@@ -20,20 +19,5 @@ class Rect(SVGBase):
         @param kwargs: keyword parameters
             additional metadata as key/value pairs'''
 
-        super(Rect, self).__init__(**kwargs)
-
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-    def render(self):
-        '''Generate the XML for this element.'''
-
-        return self.TEMPLATE.format(
-            x=self.x,
-            y=self.y,
-            width=self.width,
-            height=self.height,
-            meta=self.meta())
+        super(Rect, self).__init__(x=x, y=y, width=width, height=height, **kwargs)
 

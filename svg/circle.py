@@ -3,8 +3,7 @@ from base import SVGBase
 class Circle(SVGBase):
     '''An SVG circle.'''
 
-    TEMPLATE = '''\
-<circle cx="{cx}" cy="{cy}" r="{r}" {meta}></circle>'''
+    TAG = 'circle'
 
     def __init__(self, cx, cy, r, **kwargs):
         '''Create the circle object, with additional metadata.
@@ -18,18 +17,5 @@ class Circle(SVGBase):
         @param kwargs: keyword parameters
             additional metadata as key/value pairs'''
 
-        super(Circle, self).__init__(**kwargs)
-
-        self.cx = cx
-        self.cy = cy
-        self.r = r
-
-    def render(self):
-        '''Generate the XML for this element.'''
-
-        return self.TEMPLATE.format(
-            cx=self.cx,
-            cy=self.cy,
-            r=self.r,
-            meta=self.meta())
+        super(Circle, self).__init__(cx=cx, cy=cy, r=r, **kwargs)
 

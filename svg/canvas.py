@@ -10,16 +10,9 @@ from rect import Rect
 class Canvas(Group):
     '''The container for all SVG elements.'''
 
-    TEMPLATE = '''\
-<svg xmlns="http://www.w3.org/2000/svg" 
-     width="{width:d}pt"
-     height="{height:d}pt"
-     viewbox="0 0 {width:d} {height:d}"
-     version="1.1" {meta}>
-    {children}
- </svg>'''
+    TAG = 'svg'
 
-    def __init__(self, width, height, meta=None, **kwargs):
+    def __init__(self, width, height, **kwargs):
         '''Create the canvas.
 
         @param width: int
@@ -31,26 +24,27 @@ class Canvas(Group):
         @param kwargs: keyword parameters
             additional metadata'''
 
-        super(Canvas, self).__init__(**kwargs)
-        self.width = width
-        self.height = height
+        super(Canvas, self).__init__(
+            xmlns='http://www.w3.org/2000/svg',
+            width=width, 
+            height=height,
+            viewbox='0 0 {} {}'.format(width, height),
+            version='1.1',
+            **kwargs)
 
-    def render(self):
-        '''Generate the XML for this canvas and all of its elements.'''
+    def flip_y(self):
+        
+        return self.transform(('matrix', (1, 0, 0, -1, 0, self.height)))
 
-        children = '\n'.join(e.render() for e in self.children)
-
-        return self.TEMPLATE.format(width=self.width,
-                                    height=self.height,
-                                    children=children,
-                                    meta=self.meta())
-
-    def save(self, path):
+    def save(self, path, pretty=False):
         '''Save this canvas to a file.
 
         @param path: str
-            the path to the output file'''
+            the path to the output file
+        @param pretty: optional, bool
+            a flag controlling pretty printing - pretty printing will perform
+            indentations based on nesting level'''
         
         with open(path, 'w') as outfile:
-            outfile.write(self.render())
+            outfile.write(self.render(pretty=pretty))
 

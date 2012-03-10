@@ -12,10 +12,7 @@ from rect import Rect
 class Group(SVGBase):
     '''A group of SVG elements.'''
 
-    TEMPLATE = '''\
-<g {meta}>
-{children}
-</g>'''
+    TAG = 'g'
 
     def __init__(self, **kwargs):
         '''Create the group.
@@ -25,28 +22,29 @@ class Group(SVGBase):
 
         super(Group, self).__init__(**kwargs)
 
-        self.children = list()
 
-    def transform(self, *args):
-        '''Create an empty transform group according to the transformations in
-        args. Add the group to the DOM and return a reference to it.
+    
 
-        @param args: positional arguments
-            the transformations to apply, specified as (type, values) pairs, 
-            where type is one of "matrix" "translate" "scale" "rotate" "skewX"
-            or "skeyY"'''
-
-        transform = list()
-        for transform_type, value in args:
-            if isinstance(value, collections.Sequence):
-                value = ','.join(str(v) for v in value)
-
-            transform.append('{}({})'.format(transform_type, value))
-        transform = ', '.join(transform)
-
-        group = Group(transform=transform)
-        self.children.append(group)
-        return group
+#    def transform(self, *args):
+#        '''Create an empty transform group according to the transformations in
+#        args. Add the group to the DOM and return a reference to it.
+#
+#        @param args: positional arguments
+#            the transformations to apply, specified as (type, values) pairs, 
+#            where type is one of "matrix" "translate" "scale" "rotate" "skewX"
+#            or "skewY"'''
+#
+#        transform = list()
+#        for transform_type, value in args:
+#            if isinstance(value, collections.Sequence):
+#                value = ','.join(str(v) for v in value)
+#
+#            transform.append('{}({})'.format(transform_type, value))
+#        transform = ', '.join(transform)
+#
+#        group = Group(transform=transform)
+#        self.add_child(group)
+#        return group
 
     def path(self, *args, **kwargs):
         '''Create a path, add it to this group and return a reference to it. 
@@ -58,7 +56,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the path's constructor'''
 
         path = Path(*args, **kwargs)
-        self.children.append(path)
+        self.add_child(path)
         return path
 
     def rect(self, *args, **kwargs):
@@ -71,7 +69,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the rect's constructor'''
 
         rect = Rect(*args, **kwargs)
-        self.children.append(rect)
+        self.add_child(rect)
         return rect
 
     def circle(self, *args, **kwargs):
@@ -84,7 +82,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the circle's constructor'''
 
         circle = Circle(*args, **kwargs)
-        self.children.append(circle)
+        self.add_child(circle)
         return circle
 
     def ellipse(self, *args, **kwargs):
@@ -97,7 +95,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the circle's constructor'''
 
         ellipse = Ellipse(*args, **kwargs)
-        self.children.append(ellipse)
+        self.add_child(ellipse)
         return ellipse
 
     def line(self, *args, **kwargs):
@@ -110,7 +108,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the line's constructor'''
 
         line = Line(*args, **kwargs)
-        self.children.append(line)
+        self.add_child(line)
         return line
 
     def polyline(self, *args, **kwargs):
@@ -123,7 +121,7 @@ class Group(SVGBase):
             the keyword arguments to pass to the polyline's constructor'''
 
         polyline = Polyline(*args, **kwargs)
-        self.children.append(polyline)
+        self.add_child(polyline)
         return polyline
 
     def polygon(self, *args, **kwargs):
@@ -136,14 +134,6 @@ class Group(SVGBase):
             the keyword arguments to pass to the polygon's constructor'''
 
         polygon = Polygon(*args, **kwargs)
-        self.children.append(polygon)
+        self.add_child(polygon)
         return polygon
-
-    def render(self):
-        '''Generate the XML for this canvas and all of its elements.'''
-
-        children = '\n'.join(e.render() for e in self.children)
-
-        return self.TEMPLATE.format(children=children,
-                                    meta=self.meta())
 

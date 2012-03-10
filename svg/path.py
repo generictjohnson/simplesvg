@@ -38,8 +38,11 @@ class Path(SVGBase):
     
     The arc logic was taken from the libcairo library'''
 
-    TEMPLATE = '''\
-<path d="{d}" {meta}></path>'''
+    TAG = 'path'
+
+    RENDERERS = {
+        'd': ' '.join
+    }
 
     def __init__(self, **kwargs):
         '''Create the path object, with additional metadata.
@@ -47,9 +50,8 @@ class Path(SVGBase):
         @param kwargs: keyword parameters
             additional metadata as key/value pairs'''
 
-        super(Path, self).__init__(**kwargs)
+        super(Path, self).__init__(d=list(), **kwargs)
 
-        self.d = list()
         self.pen = None
         self.closed = False
 
@@ -194,9 +196,3 @@ class Path(SVGBase):
                 self._arc_segment(cx, cy, radius, theta, theta + theta_step)
                 theta += theta_step
 
-    def render(self):
-        '''Generate the XML for this element.'''
-
-        d = ' '.join(self.d)
-
-        return self.TEMPLATE.format(d=d, meta=self.meta())
