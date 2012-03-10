@@ -23,6 +23,19 @@ class Group(SVGBase):
         kwargs['load_defaults'] = False
         super(Group, self).__init__(**kwargs)
 
+    def group(self, *args, **kwargs):
+        '''Create a subgroup, add it to this group and return a reference to
+        it. All arguments are passed to the group's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the group's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the group's constructor'''
+
+        group = Group(*args, **kwargs)
+        self.add_child(group)
+        return group
+
     def path(self, *args, **kwargs):
         '''Create a path, add it to this group and return a reference to it. 
         All arguments are passed to the path's constructor.
