@@ -1,3 +1,3 @@
 
 from canvas import Canvas
-from path import Path
+from group import Group
