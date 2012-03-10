@@ -11,6 +11,9 @@ path.close()
 
 rect = canvas.rect(50, 50, 100, 75)
 rect.rotate(45, 75, 62.5)
+rect.meta.rotated='yes'
+rect.meta.transform = 'this should not show up'
+
 canvas.circle(25, 25, 20, fill="blue")
 canvas.ellipse(50, 300, 25, 75, fill="f03")
 canvas.line(10, 10, 10, 400, stroke="yellow")

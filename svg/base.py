@@ -140,21 +140,24 @@ class SVGBase(object):
         '''Return the attributes and meta-attributes for this SVG element, 
         string-formatted for insertion into an XML tag.'''
 
-        # get the base attributes
-        attributes = dict(super(SVGBase, self).__getattribute__('attributes'))
+        # create a dict of the base attributes
+        base_attributes = dict(super(SVGBase, self).__getattribute__('attributes'))
 
         # perform any subclass-defined transformations on the attribute data
         try:
             renderers = super(SVGBase, self).__getattribute__('RENDERERS')
-            for name in attributes:
+            for name in base_attributes:
                 if name in renderers:
-                    value = attributes[name]
-                    attributes[name] = renderers[name](value)
+                    value = base_attributes[name]
+                    base_attributes[name] = renderers[name](value)
         except AttributeError:
             pass
 
-        # update the attributes with any meta-attributes
-        attributes.update(self.meta)
+        # set the attributes to the meta, and update with the base attributes,
+        # allowing any meta attributes with the same keys as base attributes to
+        # be clobbered
+        attributes = dict(self.meta)
+        attributes.update(base_attributes)
 
         # incorporate the transform into the attributes
         transform = super(SVGBase, self).__getattribute__('transform')
@@ -189,8 +192,11 @@ class SVGBase(object):
         if children:
             children = '\n'.join(c.render(pretty=pretty, level=level+1) for c in children)
 
-            xml = '<{tag} {attributes}>\n{children}\n</{tag}>'.format(
-                tag=tag, attributes=attributes, children=children)
+            xml = '<{tag} {attributes}>\n{children}\n{padding}</{tag}>'.format(
+                tag=tag, 
+                attributes=attributes, 
+                children=children, 
+                padding=padding)
 
         else:
             xml = '<{tag} {attributes} />'.format(tag=tag, attributes=attributes)
