@@ -22,30 +22,6 @@ class Group(SVGBase):
 
         super(Group, self).__init__(**kwargs)
 
-
-    
-
-#    def transform(self, *args):
-#        '''Create an empty transform group according to the transformations in
-#        args. Add the group to the DOM and return a reference to it.
-#
-#        @param args: positional arguments
-#            the transformations to apply, specified as (type, values) pairs, 
-#            where type is one of "matrix" "translate" "scale" "rotate" "skewX"
-#            or "skewY"'''
-#
-#        transform = list()
-#        for transform_type, value in args:
-#            if isinstance(value, collections.Sequence):
-#                value = ','.join(str(v) for v in value)
-#
-#            transform.append('{}({})'.format(transform_type, value))
-#        transform = ', '.join(transform)
-#
-#        group = Group(transform=transform)
-#        self.add_child(group)
-#        return group
-
     def path(self, *args, **kwargs):
         '''Create a path, add it to this group and return a reference to it. 
         All arguments are passed to the path's constructor.
