@@ -1,11 +1,4 @@
-from circle import Circle
-from ellipse import Ellipse
 from group import Group
-from line import Line
-from path import Path
-from polygon import Polygon
-from polyline import Polyline
-from rect import Rect
 
 class Canvas(Group):
     '''The container for all SVG elements.'''
@@ -32,9 +25,15 @@ class Canvas(Group):
             version='1.1',
             **kwargs)
 
-    def flip_y(self):
-        
-        return self.transform(('matrix', (1, 0, 0, -1, 0, self.height)))
+    def flip(self):
+        '''Return a group that spans the entire canvas, but is flipped 
+        vertically, add it to the DOM and return a reference to it.'''
+
+        group = Group()
+        group.matrix(1, 0, 0, -1, 0, self.height)
+        self.add_child(group)
+
+        return group
 
     def save(self, path, pretty=False):
         '''Save this canvas to a file.

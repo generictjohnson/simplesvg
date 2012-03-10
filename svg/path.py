@@ -163,9 +163,10 @@ class Path(SVGBase):
     @requires_open
     def arc(self, cx, cy, radius, theta1, theta2, max_segment_theta=math.pi/2):
         '''Draw a circular arc (a portion of the circumference of a circle. 
-        Angles are specified in radians, where 0 is at three o'clock and the
-        positive direction is clockwise. This function will split up
-        excessively large angles into multiple paths, to preserve accuracy.
+        Angles are specified in degrees, where 0 is at three o'clock and the
+        positive direction is counter-clockwise, if positive x is to the right
+        and positive y is up. This function will split up excessively large 
+        angles into multiple paths, to preserve accuracy.
 
         @param cx: float
             the x-coordinate of the center of the circle
@@ -180,6 +181,9 @@ class Path(SVGBase):
         @param max_segment_theta: float
             the maximum angle a curve can subtend - any requests that span more
             than this value will be broken up into multiple curves'''
+
+        theta1 = math.radians(theta1)
+        theta2 = math.radians(theta2)
 
         self.line_to(cx + radius * math.cos(theta1),
                      cy + radius * math.sin(theta1))
