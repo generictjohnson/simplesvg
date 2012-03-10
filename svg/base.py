@@ -11,12 +11,33 @@ class SVGBase(object):
         @param kwargs: keyword parameters
             a dictionary of attributes'''
 
+        load_defaults = kwargs.pop('load_defaults', True)
+
         attributes = Attrs(*args, **kwargs)
 
-        super(SVGBase, self).__setattr__('attributes', attributes)
-        super(SVGBase, self).__setattr__('meta', Attrs())
-        super(SVGBase, self).__setattr__('transform', list())
-        super(SVGBase, self).__setattr__('children', list())
+        object.__setattr__(self, 'attributes', attributes)
+        object.__setattr__(self, 'meta', Attrs())
+        object.__setattr__(self, 'transform', list())
+        object.__setattr__(self, 'children', list())
+        object.__setattr__(self, 'load_defaults', load_defaults)
+
+    def __getitem__(self, name):
+        '''Return the attribute with the given name.
+
+        @param name: str
+            the name of the attribute to get'''
+
+        return object.__getattribute__('attributes')[name]
+
+    def __setitem__(self, name, value):
+        '''Forward the item assignment to the attributes mapping.
+
+        @param name: str
+            the name of the attribute to set
+        @param value: object
+            the new value of the attribute'''
+
+        object.__getattribute__('attributes')[name] = value
 
     def __getattribute__(self, name):
         '''Return the metadata if requested, otherwise look the attribute in
@@ -26,11 +47,11 @@ class SVGBase(object):
             the name of the attribute to fetch'''
 
         try:
-            return getattr(super(SVGBase, self).__getattribute__('attributes'), name)
+            return getattr(object.__getattribute__(self,'attributes'), name)
         except AttributeError:
             pass
 
-        return super(SVGBase, self).__getattribute__(name)
+        return object.__getattribute__(self,name)
 
     def __setattr__(self, name, value):
         '''Set the value of attribute 'name'. 
@@ -40,7 +61,7 @@ class SVGBase(object):
         @param value: object
             the new value of the attribute'''
 
-        super(SVGBase, self).__getattribute__('attributes')[name] = value
+        setattr(object.__getattribute__(self, 'attributes'), name, value)
 
     def add_child(self, child):
         '''Add an SVG element to this one as a child element.
@@ -48,7 +69,7 @@ class SVGBase(object):
         @param child: SVGBase
             the SVG element to add as a child'''
 
-        super(SVGBase, self).__getattribute__('children').append(child)
+        object.__getattribute__(self,'children').append(child)
 
     def matrix(self, a, b, c, d, e, f):
         '''Create a group with a matrix transformation, add it to the DOM and
@@ -71,7 +92,7 @@ class SVGBase(object):
         @param f: float
             the y-translation factor'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('matrix({}, {}, {}, {}, {}, {})'.format(a, b, c, d, e, f))
         return self
 
@@ -84,7 +105,7 @@ class SVGBase(object):
         @param ty: float
             the y translation'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('translate({} {})'.format(tx, ty))
         return self
 
@@ -97,7 +118,7 @@ class SVGBase(object):
         @param sy: float
             the y scaling factor'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('scale({} {})'.format(sx, sy))
         return self
 
@@ -112,7 +133,7 @@ class SVGBase(object):
         @param cy: optional, float
             the y-center of rotation, defaults to 0'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('rotate({}, {}, {})'.format(theta, cx, cy))
         return self
 
@@ -122,7 +143,7 @@ class SVGBase(object):
         @param theta: float
             the angle, in degrees, of the skew'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('skewX({})'.format(theta))
         return self
 
@@ -132,20 +153,36 @@ class SVGBase(object):
         @param theta: float
             the angle, in degrees, of the skew'''
 
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         transform.append('skewY({})'.format(theta))
         return self
+
+    def defaults(self):
+        '''Return default values for this SVG element.'''
+
+        load_defaults = object.__getattribute__(self, 'load_defaults')
+
+        if load_defaults:
+            yield 'fill', 'none'
+            yield 'stroke', '#000'
 
     def render_attributes(self):
         '''Return the attributes and meta-attributes for this SVG element, 
         string-formatted for insertion into an XML tag.'''
 
+        # set the attributes to the meta
+        attributes = dict(self.meta)
+
+        # apply default values if they have not been supplied
+        for key, value in self.defaults():
+            attributes[key] = value
+
         # create a dict of the base attributes
-        base_attributes = dict(super(SVGBase, self).__getattribute__('attributes'))
+        base_attributes = dict(object.__getattribute__(self,'attributes'))
 
         # perform any subclass-defined transformations on the attribute data
         try:
-            renderers = super(SVGBase, self).__getattribute__('RENDERERS')
+            renderers = object.__getattribute__(self,'RENDERERS')
             for name in base_attributes:
                 if name in renderers:
                     value = base_attributes[name]
@@ -153,24 +190,14 @@ class SVGBase(object):
         except AttributeError:
             pass
 
-        # set the attributes to the meta, and update with the base attributes,
-        # allowing any meta attributes with the same keys as base attributes to
-        # be clobbered
-        attributes = dict(self.meta)
+        # update the attributes so far with the base attributes, allowing any 
+        # meta attributes with the same keys as base attributes to be clobbered
         attributes.update(base_attributes)
 
         # incorporate the transform into the attributes
-        transform = super(SVGBase, self).__getattribute__('transform')
+        transform = object.__getattribute__(self,'transform')
         if transform:
             attributes['transform'] = ' '.join(transform)
-
-        # apply default fill
-        if 'fill' not in attributes:
-            attributes['fill'] = 'none'
-
-        # apply default stroke
-        if 'stroke' not in attributes:
-            attributes['stroke'] = '#000'
 
         return ' '.join('{}="{}"'.format(*kv) for kv in attributes.iteritems())
 
@@ -188,7 +215,7 @@ class SVGBase(object):
         tag = self.TAG
         attributes = self.render_attributes()
 
-        children = super(SVGBase, self).__getattribute__('children')
+        children = object.__getattribute__(self,'children')
         if children:
             children = '\n'.join(c.render(pretty=pretty, level=level+1) for c in children)
 

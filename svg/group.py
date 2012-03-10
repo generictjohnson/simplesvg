@@ -20,6 +20,7 @@ class Group(SVGBase):
         @param kwargs: keyword parameters
             additional metadata'''
 
+        kwargs['load_defaults'] = False
         super(Group, self).__init__(**kwargs)
 
     def path(self, *args, **kwargs):

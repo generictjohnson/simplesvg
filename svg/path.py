@@ -27,7 +27,8 @@ def requires_open(fn):
 
     @wraps(fn)
     def wrapper(self, *args, **kwargs):
-        if self.closed:
+        closed = object.__getattribute__(self, 'closed')
+        if closed:
             raise ValueError('cannot call {} on a closed path'.format(fn.__name__))
 
         return fn(self, *args, **kwargs)
@@ -52,8 +53,8 @@ class Path(SVGBase):
 
         super(Path, self).__init__(d=list(), **kwargs)
 
-        self.pen = None
-        self.closed = False
+        object.__setattr__(self, 'pen', None)
+        object.__setattr__(self, 'closed', False)
 
     def _pen(self, x, y):
         '''Set the position of the pen.
@@ -63,7 +64,7 @@ class Path(SVGBase):
         @param y: float
             the y-coordinate of the pen'''
 
-        self.pen = (x, y)
+        object.__setattr__(self, 'pen', (x, y))
 
     @requires_open
     def move_to(self, x, y):
@@ -98,7 +99,7 @@ class Path(SVGBase):
         '''Close the path. This prevents any further modifications.'''
 
         self.d.append('Z')
-        self.closed = True
+        object.__setattr__(self, 'closed', True)
 
     @requires_initalization
     @requires_open
@@ -161,9 +162,10 @@ class Path(SVGBase):
 
     @requires_initalization
     @requires_open
-    def arc(self, cx, cy, radius, theta1, theta2, max_segment_theta=math.pi/2):
+    def arc(self, cx, cy, radius, theta1, theta2, radians=False, max_segment_theta=math.pi/2):
         '''Draw a circular arc (a portion of the circumference of a circle. 
-        Angles are specified in degrees, where 0 is at three o'clock and the
+        Angles are specified in degrees, unless the keyword argument 'radians'
+        is set to true. The angle with value 0 is at three o'clock and the
         positive direction is counter-clockwise, if positive x is to the right
         and positive y is up. This function will split up excessively large 
         angles into multiple paths, to preserve accuracy.
@@ -182,8 +184,9 @@ class Path(SVGBase):
             the maximum angle a curve can subtend - any requests that span more
             than this value will be broken up into multiple curves'''
 
-        theta1 = math.radians(theta1)
-        theta2 = math.radians(theta2)
+        if not radians:
+            theta1 = math.radians(theta1)
+            theta2 = math.radians(theta2)
 
         self.line_to(cx + radius * math.cos(theta1),
                      cy + radius * math.sin(theta1))
