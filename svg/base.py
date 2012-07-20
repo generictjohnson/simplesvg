@@ -12,10 +12,12 @@ class SVGBase(object):
             a dictionary of attributes'''
 
         load_defaults = kwargs.pop('load_defaults', True)
+        content = kwargs.pop('content', '')
 
         attributes = Attrs(*args, **kwargs)
 
         object.__setattr__(self, 'attributes', attributes)
+        object.__setattr__(self, 'content', content)
         object.__setattr__(self, 'meta', Attrs())
         object.__setattr__(self, 'transform', list())
         object.__setattr__(self, 'children', list())
@@ -217,12 +219,13 @@ class SVGBase(object):
         attributes = self.render_attributes()
 
         children = object.__getattribute__(self, 'children')
-        if children:
+        if self.content or children:
             children = '\n'.join(c.render(pretty=pretty, level=level+1) for c in children)
 
-            xml = '<{tag} {attributes}>\n{children}\n{padding}</{tag}>'.format(
+            xml = '<{tag} {attributes}>\n{content}\n{children}\n{padding}</{tag}>'.format(
                 tag=tag, 
                 attributes=attributes, 
+                content=self.content,
                 children=children, 
                 padding=padding)
 

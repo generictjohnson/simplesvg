@@ -8,6 +8,7 @@ from path import Path
 from polygon import Polygon
 from polyline import Polyline
 from rect import Rect
+from text import Text
 
 class Group(SVGBase):
     '''A group of SVG elements.'''
@@ -126,4 +127,17 @@ class Group(SVGBase):
         polygon = Polygon(*args, **kwargs)
         self.add_child(polygon)
         return polygon
+
+    def text(self, *args, **kwargs):
+        '''Create text, add it to this group and return a reference to it. All 
+        arguments are passed to the text's constructor.
+
+        @param args: positional arguments
+            the positional arguments to pass to the polygon's constructor
+        @param kwargs: keyword arguments
+            the keyword arguments to pass to the polygon's constructor'''
+
+        text = Text(*args, **kwargs)
+        self.add_child(text)
+        return text
 
